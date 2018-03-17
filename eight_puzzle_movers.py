@@ -3,6 +3,7 @@ from eight_puzzle_helpers import locate_blank
 from eight_puzzle_helpers import copy_nested_list
 from eight_puzzle_helpers import print_nested_list
 
+
 def can_move_blank(direction, nested_list):
     blank_row, blank_col = locate_blank(nested_list)
     if direction == 'UP' and blank_row == 0:
@@ -14,6 +15,7 @@ def can_move_blank(direction, nested_list):
     if direction == 'LEFT' and blank_col == 0:
         return False
     return True
+
 
 def new_after_move(direction, nested_list):
     new_nested_list = copy_nested_list(nested_list)
@@ -54,6 +56,7 @@ def new_after_move(direction, nested_list):
             return new_nested_list
     else:
         1/0
+
 
 if __name__ == '__main__':
     print(can_move_blank('UP', to_2d_list('123405678')))

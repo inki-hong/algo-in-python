@@ -3,14 +3,15 @@ import datetime
 from eight_puzzle_helpers import *
 from eight_puzzle_movers import *
 
-start_state = {'state': '275318406', 'moves': []}
-queue = [start_state]
-seen = {start_state['state']}
+st_state = {'state': '275318406', 'moves': []}
+qu = [st_state]
+saw = {st_state['state']}
 
 
 def bfs(start_state, queue, seen):
     visit_count = 0
     while queue:
+        print(queue)
         head, queue = queue[0], queue[1:]
         visit_count += 1
         if is_solution(head['state']):
@@ -34,7 +35,7 @@ def bfs(start_state, queue, seen):
 
 t0 = datetime.datetime.now()
 
-bfs(start_state, queue, seen)
+bfs(st_state, qu, saw)
 
 t1 = datetime.datetime.now()
 
