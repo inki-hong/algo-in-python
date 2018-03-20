@@ -58,6 +58,25 @@ def new_after_move(direction, nested_list):
         1/0
 
 
+def heuristic(string):
+    total = 0
+    for char in string:
+        currentPos = string.index(char)
+        currentCoord = (1, 1)
+        if char == '0':
+            rightPosition = (0, 0)
+        elif char == '1':
+            rightPosition = (0, 1)
+        pass
+        dx = currentPos[0] - rightPosition[0]
+        dy = currentPos[1] - rightPosition[1]
+        dx = abs(dx)
+        dy = abs(dy)
+        total = total + dx + dy
+    return total
+
+
+
 if __name__ == '__main__':
     print(can_move_blank('UP', to_2d_list('123405678')))
     print(can_move_blank('LEFT', to_2d_list('123405678')))
