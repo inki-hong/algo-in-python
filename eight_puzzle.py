@@ -1,15 +1,11 @@
 import datetime
 import sys
 
-from eight_puzzle_helpers import *
-from eight_puzzle_movers import *
-
-st_state = {'state': '275318406', 'moves': []}
-qu = [st_state]
-saw = {st_state['state']}
+from eight_puzzle_helpers import is_solution, to_2d_list, to_str
+from eight_puzzle_movers import can_move_blank, new_after_move
 
 
-def bfs(start_state, queue, seen):
+def bfs(queue, seen):
     visit_count = 0
     while queue:
         head, queue = queue[0], queue[1:]
@@ -33,29 +29,23 @@ def bfs(start_state, queue, seen):
                     queue.append({'state': new_state, 'moves': new_moves})
 
 
-# t0 = datetime.datetime.now()
-#
-# bfs(st_state, qu, saw)
-#
-# t1 = datetime.datetime.now()
-#
-# print((t1 - t0).total_seconds())
-
 ########################################################################################################################
 
-st_state = {'state': '275318406', 'moves': []}
-qu = [st_state]
-saw = {st_state['state']}
 
-max_depth = -1
-
-
-def dfs(start_state, stack, seen):
-    global max_depth
+def dfs(stack, seen):
+    max_stack_size = -1
+    max_seen_size = -1
+    max_depth = -1
     visit_count = 0
     while stack:
         top = stack.pop()
         visit_count += 1
+        stack_size = sys.getsizeof(stack)
+        seen_size = sys.getsizeof(seen)
+        if stack_size > max_stack_size:
+            max_stack_size = stack_size
+        if seen_size > max_seen_size:
+            max_seen_size = seen_size
         if is_solution(top['state']):
             print(
                 'Found solution {} of {} moves in {} visits'.format(
@@ -63,7 +53,7 @@ def dfs(start_state, stack, seen):
                 )
             )
             break
-        for direction in ('LEFT', 'DOWN', 'RIGHT', 'UP', ):
+        for direction in ('UP', 'LEFT', 'DOWN', 'RIGHT'):
             moves_so_far = top['moves']
             if len(moves_so_far) > max_depth:
                 max_depth = len(moves_so_far)
@@ -78,29 +68,49 @@ def dfs(start_state, stack, seen):
                     # total = heuristic(new_state)
                     # pq.put( (total, {'state': new_state, 'moves': new_moves} ) )
 
+    return max_depth, max_stack_size, max_seen_size
 
-# t0 = datetime.datetime.now()
-#
-# dfs(st_state, qu, saw)
-#
-# t1 = datetime.datetime.now()
-#
-# print((t1 - t0).total_seconds())
 
-if len(sys.argv) != 3:
-    print('Usage: eight_puzzle.py [search method] [initial state]')
-else:
-    st = sys.argv[2]
-    st = st.replace(',', '')
-    print(st)
-    st_state = {'state': st, 'moves': []}
+########################################################################################################################
+
+
+if len(sys.argv) == 1:
+    start_state = {'state': '275318406', 'moves': []}
+    seq = [start_state]
+    seen_set = {start_state['state']}
+    t0 = datetime.datetime.now()
+    bfs(seq, seen_set)
+    t1 = datetime.datetime.now()
+    print('BFS in', (t1 - t0).total_seconds(), 'seconds')
+    seq = [start_state]
+    seen_set = {start_state['state']}
+    t0 = datetime.datetime.now()
+    result = dfs(seq, seen_set)
+    t1 = datetime.datetime.now()
+    print('DFS in', (t1 - t0).total_seconds(), 'seconds')
+    print('max_depth:', result[0])
+    print('max_stack_size:', result[1])
+    print('max_seen_size:', result[2])
+elif len(sys.argv) == 3:
+    state = sys.argv[2]
+    state = state.replace(',', '')
+    start_state = {'state': state, 'moves': []}
+    seq = [start_state]
+    seen_set = {start_state['state']}
     if sys.argv[1] == 'bfs':
-        bfs(st_state, qu, saw)
+        t0 = datetime.datetime.now()
+        bfs(seq, seen_set)
+        t1 = datetime.datetime.now()
+        print('BFS in', (t1 - t0).total_seconds(), 'seconds')
     elif sys.argv[1] == 'dfs':
-        dfs(st_state, qu, saw)
+        t0 = datetime.datetime.now()
+        result = dfs(seq, seen_set)
+        t1 = datetime.datetime.now()
+        print('DFS in', (t1 - t0).total_seconds(), 'seconds')
+        print('max_depth:', result[0])
+        print('max_stack_size:', result[1])
+        print('max_seen_size:', result[2])
     elif sys.argv[1] == 'astar':
         print('A* not implemented yet')
-    print('max_depth:', max_depth)
-    sys.getsizeof(st_state)
-    sys.getsizeof(qu)
-    sys.getsizeof(saw)
+else:
+    print('Usage: eight_puzzle.py [search method] [initial state]')
