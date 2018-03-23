@@ -1,14 +1,16 @@
 import datetime
 import sys
+from queue import Queue, LifoQueue, PriorityQueue
 
-from eight_puzzle_helpers import is_solution, to_2d_list, to_str
-from eight_puzzle_movers import can_move_blank, new_after_move
+import memory_profiler
+from eight_puzzle_helpers import is_solution
+from eight_puzzle_movers import can_move_blank, new_after_move, heuristic
 
 
 def bfs(queue, seen):
     visit_count = 0
     while queue:
-        head, queue = queue[0], queue[1:]
+        head = queue.get()
         visit_count += 1
         if is_solution(head['state']):
             print(
@@ -17,35 +19,26 @@ def bfs(queue, seen):
                 )
             )
             break
-        for direction in ('UP', 'LEFT', 'DOWN', 'RIGHT'):
+        for direction in ('U', 'L', 'D', 'R'):
             moves_so_far = head['moves']
-            nested_list = to_2d_list(head['state'])
-            if can_move_blank(direction, nested_list):
-                new_state = to_str(new_after_move(direction, nested_list))
+            current_state = head['state']
+            if can_move_blank(direction, current_state):
+                new_state = new_after_move(direction, current_state)
                 if new_state not in seen:
                     seen.add(new_state)
-                    new_moves = moves_so_far[:]
-                    new_moves.append(direction)
-                    queue.append({'state': new_state, 'moves': new_moves})
+                    new_moves = moves_so_far + direction
+                    queue.put({'state': new_state, 'moves': new_moves})
 
 
 ########################################################################################################################
 
 
 def dfs(stack, seen):
-    max_stack_size = -1
-    max_seen_size = -1
-    max_depth = -1
     visit_count = 0
+    max_depth = -1
     while stack:
-        top = stack.pop()
+        top = stack.get()
         visit_count += 1
-        stack_size = sys.getsizeof(stack)
-        seen_size = sys.getsizeof(seen)
-        if stack_size > max_stack_size:
-            max_stack_size = stack_size
-        if seen_size > max_seen_size:
-            max_seen_size = seen_size
         if is_solution(top['state']):
             print(
                 'Found solution {} of {} moves in {} visits'.format(
@@ -53,64 +46,114 @@ def dfs(stack, seen):
                 )
             )
             break
-        for direction in ('UP', 'LEFT', 'DOWN', 'RIGHT'):
+        for direction in ('U', 'L', 'D', 'R'):
             moves_so_far = top['moves']
             if len(moves_so_far) > max_depth:
                 max_depth = len(moves_so_far)
-            nested_list = to_2d_list(top['state'])
-            if can_move_blank(direction, nested_list):
-                new_state = to_str(new_after_move(direction, nested_list))
+            current_state = top['state']
+            if can_move_blank(direction, current_state):
+                new_state = new_after_move(direction, current_state)
                 if new_state not in seen:
                     seen.add(new_state)
-                    new_moves = moves_so_far[:]
-                    new_moves.append(direction)
-                    stack.append({'state': new_state, 'moves': new_moves})
-                    # total = heuristic(new_state)
-                    # pq.put( (total, {'state': new_state, 'moves': new_moves} ) )
+                    new_moves = moves_so_far + direction
+                    stack.put({'state': new_state, 'moves': new_moves})
 
-    return max_depth, max_stack_size, max_seen_size
+    stack_size = memory_profiler.total_size(stack)
+    seen_size = memory_profiler.total_size(seen)
+    return max_depth, stack_size, seen_size
+
+
+########################################################################################################################
+
+def a_star(priority_queue, seen):
+    visit_count = 0
+    while priority_queue:
+        t = priority_queue.get()
+        lowest = {'state': t[1], 'moves': t[2]}
+        visit_count += 1
+        if is_solution(lowest['state']):
+            print(
+                'Found solution {} of {} moves in {} visits'.format(
+                    lowest['moves'], len(lowest['moves']), visit_count
+                )
+            )
+            break
+        for direction in ('U', 'L', 'D', 'R'):
+            moves_so_far = lowest['moves']
+            current_state = lowest['state']
+            if can_move_blank(direction, current_state):
+                new_state = new_after_move(direction, current_state)
+                if new_state not in seen:
+                    seen.add(new_state)
+                    new_moves = moves_so_far + direction
+                    total = heuristic(new_state)
+                    priority_queue.put((total, new_state, new_moves))
 
 
 ########################################################################################################################
 
 
 if len(sys.argv) == 1:
-    start_state = {'state': '275318406', 'moves': []}
-    seq = [start_state]
+    start_state = {'state': '275318406', 'moves': ''}
+
+    init_queue = Queue()
+    init_queue.put(start_state)
     seen_set = {start_state['state']}
     t0 = datetime.datetime.now()
-    bfs(seq, seen_set)
+    bfs(init_queue, seen_set)
     t1 = datetime.datetime.now()
     print('BFS in', (t1 - t0).total_seconds(), 'seconds')
-    seq = [start_state]
+
+    init_stack = LifoQueue()
+    init_stack.put(start_state)
     seen_set = {start_state['state']}
     t0 = datetime.datetime.now()
-    result = dfs(seq, seen_set)
+    result = dfs(init_stack, seen_set)
     t1 = datetime.datetime.now()
     print('DFS in', (t1 - t0).total_seconds(), 'seconds')
     print('max_depth:', result[0])
     print('max_stack_size:', result[1])
     print('max_seen_size:', result[2])
+
+    init_pq = PriorityQueue()
+    score = heuristic(start_state['state'])
+    init_pq.put((score, start_state['state'], start_state['moves']))
+    seen_set = {start_state['state']}
+    t0 = datetime.datetime.now()
+    a_star(init_pq, seen_set)
+    t1 = datetime.datetime.now()
+    print('A-star in', (t1 - t0).total_seconds(), 'seconds')
 elif len(sys.argv) == 3:
     state = sys.argv[2]
     state = state.replace(',', '')
-    start_state = {'state': state, 'moves': []}
-    seq = [start_state]
-    seen_set = {start_state['state']}
+    start_state = {'state': state, 'moves': ''}
     if sys.argv[1] == 'bfs':
+        init_queue = Queue()
+        init_queue.put(start_state)
+        seen_set = {start_state['state']}
         t0 = datetime.datetime.now()
-        bfs(seq, seen_set)
+        bfs(init_queue, seen_set)
         t1 = datetime.datetime.now()
         print('BFS in', (t1 - t0).total_seconds(), 'seconds')
     elif sys.argv[1] == 'dfs':
+        init_stack = LifoQueue()
+        init_stack.put(start_state)
+        seen_set = {start_state['state']}
         t0 = datetime.datetime.now()
-        result = dfs(seq, seen_set)
+        result = dfs(init_stack, seen_set)
         t1 = datetime.datetime.now()
         print('DFS in', (t1 - t0).total_seconds(), 'seconds')
         print('max_depth:', result[0])
         print('max_stack_size:', result[1])
         print('max_seen_size:', result[2])
-    elif sys.argv[1] == 'astar':
-        print('A* not implemented yet')
+    elif sys.argv[1] == 'a-star':
+        init_pq = PriorityQueue()
+        score = heuristic(start_state['state'])
+        init_pq.put((score, start_state['state'], start_state['moves']))
+        seen_set = {start_state['state']}
+        t0 = datetime.datetime.now()
+        a_star(init_pq, seen_set)
+        t1 = datetime.datetime.now()
+        print('A-star in', (t1 - t0).total_seconds(), 'seconds')
 else:
     print('Usage: eight_puzzle.py [search method] [initial state]')
