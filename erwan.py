@@ -1,7 +1,110 @@
 import datetime
 
-from eight_puzzle_helpers import goal
-from eight_puzzle_movers import can_move_blank, new_after_move, heuristic
+
+def goal(state):
+    # return state == '012345678'
+    if state == '012345678':
+        return True
+    else:
+        return False
+
+
+def locate_blank(nested_list):
+    blank_pos = nested_list.index('0')
+    return (blank_pos)
+
+
+def can_move_blank(direction, nested_list):
+    blank_pos = locate_blank(nested_list)
+    print(blank_pos)
+    if direction == 'UP' and blank_pos in (0,1,2):
+         return False
+    if direction == 'RIGHT' and blank_pos in (2,5,8):
+         return False
+    if direction == 'DOWN' and blank_pos in (6,7,8):
+         return False
+    if direction == 'LEFT' and blank_pos in (0,3,6):
+         return False
+    else:
+     return True
+
+
+def new_after_move(direction, nested_list):
+    # I search the index of the 0
+    blank_pos = locate_blank(nested_list)
+
+    if direction == 'UP':
+        toswapindex=blank_pos - 3     # I define the index where I will put my 0 after
+        toswap_value =nested_list[toswapindex]    # I extract the value currently in the destination index
+        # new_nested_list = nested_list[toswapindex:]+'0'+nested_list[toswapindex+1:blank_pos]+toswap_value+nested_list[toswap_value+1:] # I rebuild the list
+        new_nested_list = (nested_list[:toswapindex] +
+                           '0' +
+                           nested_list[toswapindex + 1:blank_pos] +
+                           toswap_value +
+                           nested_list[blank_pos + 1:])
+        return new_nested_list
+    elif direction == 'RIGHT':
+        toswapindex = blank_pos + 1
+        toswap_value = nested_list[toswapindex]
+        # new_nested_list = nested_list[toswapindex:]+'0'+nested_list[toswapindex+1:blank_pos]+toswap_value+nested_list[toswap_value+1:] # I rebuild the list
+        new_nested_list = (nested_list[:blank_pos]
+                           + toswap_value
+                           + nested_list[blank_pos + 1:toswapindex]
+                           + '0'
+                           + nested_list[toswapindex + 1:])
+        return new_nested_list
+    elif direction == 'DOWN':
+        toswapindex=blank_pos + 3
+        toswap_value =nested_list[toswapindex]
+        # new_nested_list = nested_list[toswapindex:]+'0'+nested_list[toswapindex+1:blank_pos]+toswap_value+nested_list[toswap_value+1:] # I rebuild the list
+        new_nested_list = (nested_list[:blank_pos]
+                           + toswap_value
+                           + nested_list[blank_pos + 1:toswapindex]
+                           + '0'
+                           + nested_list[toswapindex + 1:])
+        return new_nested_list
+    elif direction == 'LEFT':
+        toswapindex = blank_pos - 1
+        toswap_value = nested_list[toswapindex]
+        # new_nested_list = nested_list[toswapindex:]+'0'+nested_list[toswapindex+1:blank_pos]+toswap_value+nested_list[toswap_value+1:] # I rebuild the list
+        new_nested_list = (nested_list[:toswapindex] +
+                           '0' +
+                           nested_list[toswapindex + 1:blank_pos] +
+                           toswap_value +
+                           nested_list[blank_pos + 1:])
+    return new_nested_list
+
+
+def heuristic(string):
+    total = 0
+    for char in string:
+        currentPos = string.index(char)
+        currentCoord = (currentPos // 3, currentPos % 3)
+        if char == '0':
+            rightPosition = (0, 0)
+        elif char == '1':
+            rightPosition = (0, 1)
+        elif char == '2':
+            rightPosition = (0, 2)
+        elif char == '3':
+            rightPosition = (1, 0)
+        elif char == '4':
+            rightPosition = (1, 1)
+        elif char == '5':
+            rightPosition = (1, 2)
+        elif char == '6':
+            rightPosition = (2, 0)
+        elif char == '7':
+            rightPosition = (2, 1)
+        elif char == '8':
+            rightPosition = (2, 2)
+        print (currentPos)
+        dx = currentCoord[0] - rightPosition[0]
+        dy = currentCoord[1] - rightPosition[1]
+        dx = abs(dx)
+        dy = abs(dy)
+        total = total + dx + dy
+    return total
 
 
 first_state = input('please enter initial state:')
