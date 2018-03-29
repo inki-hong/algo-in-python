@@ -14,14 +14,14 @@ def can_move_blank(direction, state):
     return True
 
 
-assert can_move_blank('UP', '123405678')
-assert can_move_blank('DOWN', '123405678')
-assert can_move_blank('LEFT', '123405678')
-assert can_move_blank('RIGHT', '123405678')
-assert not can_move_blank('UP', '102345678')
-assert not can_move_blank('LEFT', '123045678')
-assert not can_move_blank('DOWN', '123456708')
-assert not can_move_blank('RIGHT', '123450678')
+assert can_move_blank('U', '123405678')
+assert can_move_blank('D', '123405678')
+assert can_move_blank('L', '123405678')
+assert can_move_blank('R', '123405678')
+assert not can_move_blank('U', '102345678')
+assert not can_move_blank('L', '123045678')
+assert not can_move_blank('D', '123456708')
+assert not can_move_blank('R', '123450678')
 
 
 def new_after_move(direction, state):
@@ -92,10 +92,10 @@ def new_after_move(direction, state):
         raise RuntimeError('Must NOT happen!')
 
 
-assert new_after_move('UP', '123405678') == '103425678'
-assert new_after_move('LEFT', '123405678') == '123045678'
-assert new_after_move('DOWN', '123405678') == '123475608'
-assert new_after_move('RIGHT', '123405678') == '123450678'
+assert new_after_move('U', '123405678') == '103425678'
+assert new_after_move('L', '123405678') == '123045678'
+assert new_after_move('D', '123405678') == '123475608'
+assert new_after_move('R', '123405678') == '123450678'
 
 
 def heuristic(state):

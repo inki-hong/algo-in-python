@@ -2,7 +2,9 @@ import datetime
 import sys
 from queue import Queue, LifoQueue, PriorityQueue
 
-import memory_profiler
+import py_mem_prof
+from memory_profiler import profile
+
 from eight_puzzle_helpers import is_solution
 from eight_puzzle_movers import can_move_blank, new_after_move, heuristic
 
@@ -33,6 +35,7 @@ def bfs(queue, seen):
 ########################################################################################################################
 
 
+@profile
 def dfs(stack, seen):
     visit_count = 0
     max_depth = -1
@@ -58,8 +61,8 @@ def dfs(stack, seen):
                     new_moves = moves_so_far + direction
                     stack.put({'state': new_state, 'moves': new_moves})
 
-    stack_size = memory_profiler.total_size(stack)
-    seen_size = memory_profiler.total_size(seen)
+    stack_size = py_mem_prof.total_size(stack)
+    seen_size = py_mem_prof.total_size(seen)
     return max_depth, stack_size, seen_size
 
 
@@ -112,7 +115,7 @@ if len(sys.argv) == 1:
     t1 = datetime.datetime.now()
     print('DFS in', (t1 - t0).total_seconds(), 'seconds')
     print('max_depth:', result[0])
-    print('max_stack_size:', result[1])
+    print('final_stack_size:', result[1])
     print('max_seen_size:', result[2])
 
     init_pq = PriorityQueue()
@@ -144,7 +147,7 @@ elif len(sys.argv) == 3:
         t1 = datetime.datetime.now()
         print('DFS in', (t1 - t0).total_seconds(), 'seconds')
         print('max_depth:', result[0])
-        print('max_stack_size:', result[1])
+        print('final_stack_size:', result[1])
         print('max_seen_size:', result[2])
     elif sys.argv[1] == 'a-star':
         init_pq = PriorityQueue()
