@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70751057-93c9-4511-998b-8ad256887a92" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eight_puzzle.py" beforeDir="false" afterPath="$PROJECT_DIR$/eight_puzzle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eight_puzzle_movers.py" beforeDir="false" afterPath="$PROJECT_DIR$/eight_puzzle_movers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/memory_profiler.py" beforeDir="false" afterPath="$PROJECT_DIR$/py_mem_prof.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/algo-in-python.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,21 +23,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="eight_puzzle.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/eight_puzzle.py">
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="37" column="8" lean-forward="true" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="20">
+              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="eight_puzzle_movers.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/eight_puzzle_movers.py">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -63,6 +57,7 @@
         <option value="$PROJECT_DIR$/erwan.py" />
         <option value="$PROJECT_DIR$/eight_puzzle_movers.py" />
         <option value="$PROJECT_DIR$/eight_puzzle.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -245,7 +240,14 @@
       <option name="project" value="LOCAL" />
       <updated>1521797034684</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Memory profiling">
+      <created>1522308825514</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1522308825514</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -313,7 +315,8 @@
     <MESSAGE value="PyCharm files" />
     <MESSAGE value="Eight puzzle heuristic" />
     <MESSAGE value="Class discussion" />
-    <option name="LAST_COMMIT_MESSAGE" value="Class discussion" />
+    <MESSAGE value="Memory profiling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Memory profiling" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -466,9 +469,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/eight_puzzle_movers.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/py_mem_prof.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -485,6 +485,16 @@
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/eight_puzzle_movers.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
