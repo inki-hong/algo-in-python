@@ -4,14 +4,14 @@ import os
 from queue import Queue, LifoQueue, PriorityQueue
 
 import py_mem_prof
-from memory_profiler import profile
+# from memory_profiler import profile
 
 from eight_puzzle_helpers import is_solution
 from eight_puzzle_movers import can_move_blank, new_after_move, heuristic
 
-if os.name == 'posix':
+if os.name == 'posix':  # Mac and Linux only
     import resource
-else:
+else:                   # Windows does not support ru_maxrss
     resource = None
 
 
@@ -41,7 +41,7 @@ def bfs(queue, seen):
 ########################################################################################################################
 
 
-@profile
+# @profile
 def dfs(stack, seen):
     visit_count = 0
     max_depth = -1
@@ -72,10 +72,12 @@ def dfs(stack, seen):
 
     if resource:
         resource_usage = resource.getrusage(resource.RUSAGE_SELF)
+        ru_maxrss = resource_usage.ru_maxrss
     else:
         resource_usage = None
+        ru_maxrss = None
 
-    return max_depth, stack_size, seen_size, resource_usage.ru_maxrss
+    return max_depth, stack_size, seen_size, ru_maxrss
 
 
 ########################################################################################################################
