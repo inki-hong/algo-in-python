@@ -1,5 +1,6 @@
 import datetime
 import sys
+import os
 from queue import Queue, LifoQueue, PriorityQueue
 
 import py_mem_prof
@@ -7,6 +8,11 @@ from memory_profiler import profile
 
 from eight_puzzle_helpers import is_solution
 from eight_puzzle_movers import can_move_blank, new_after_move, heuristic
+
+if os.name == 'posix':
+    import resource
+else:
+    resource = None
 
 
 def bfs(queue, seen):
@@ -63,7 +69,13 @@ def dfs(stack, seen):
 
     stack_size = py_mem_prof.total_size(stack)
     seen_size = py_mem_prof.total_size(seen)
-    return max_depth, stack_size, seen_size
+
+    if resource:
+        resource_usage = resource.getrusage(resource.RUSAGE_SELF)
+    else:
+        resource_usage = None
+
+    return max_depth, stack_size, seen_size, resource_usage.ru_maxrss
 
 
 ########################################################################################################################
@@ -117,6 +129,7 @@ if len(sys.argv) == 1:
     print('max_depth:', result[0])
     print('final_stack_size:', result[1])
     print('max_seen_size:', result[2])
+    print('resource.ru_maxrss (KB):', result[3])
 
     init_pq = PriorityQueue()
     score = heuristic(start_state['state'])
@@ -149,6 +162,7 @@ elif len(sys.argv) == 3:
         print('max_depth:', result[0])
         print('final_stack_size:', result[1])
         print('max_seen_size:', result[2])
+        print('resource.ru_maxrss (KB):', result[3])
     elif sys.argv[1] == 'a-star':
         init_pq = PriorityQueue()
         score = heuristic(start_state['state'])
