@@ -21,13 +21,24 @@ with open('input1.csv', newline='') as csv_file_obj:
 X = np.array(feature_list)
 Y = np.array(label_list)
 
-clf = Perceptron(max_iter=1)
-
-clf.fit(X, Y)
-
-print('Perceptron coefficients', clf.coef_)
-print('Intercept', clf.intercept_)
-print('Actual # of iterations', clf.n_iter_)
-
-prediction = clf.predict([[10, 10], [5, 15]])
-print('Perceptron predictions', prediction)
+with open('output1.csv', mode='w', newline='') as csv_file_obj:
+    writer = csv.writer(csv_file_obj)
+    go = True
+    iter_count = 0
+    last_coef = None
+    while go:
+        iter_count += 1
+        clf = Perceptron(max_iter=iter_count)
+        clf.fit(X, Y)
+        # print('Perceptron coefficients', clf.coef_)
+        # print('Intercept', clf.intercept_)
+        # print('Actual # of iterations', clf.n_iter_)
+        writer.writerow([
+            int(clf.coef_[0][0]), int(clf.coef_[0][1]), int(clf.intercept_[0])
+        ])
+        if last_coef is not None:
+            if clf.coef_[0][0] == last_coef[0][0]:
+                if clf.coef_[0][1] == last_coef[0][1]:
+                    go = False
+        last_coef = clf.coef_
+    print('Iteration count', iter_count)
