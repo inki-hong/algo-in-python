@@ -298,7 +298,7 @@ def a_star(priority_queue, seen):
                 if new_state not in seen:
                     seen.add(new_state)
                     new_moves = moves_so_far + direction
-                    total = heuristic(new_state)
+                    total = len(moves_so_far) + heuristic(new_state)
                     priority_queue.put((total, new_state, new_moves))
 
 
