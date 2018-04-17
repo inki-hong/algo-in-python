@@ -1,12 +1,20 @@
 import csv
+import sys
 
 import numpy as np
 from sklearn.linear_model import SGDRegressor
 
 
+if len(sys.argv) == 3:
+    input_name = sys.argv[1]
+    output_name = sys.argv[2]
+else:
+    input_name = 'input2.csv'
+    output_name = 'output2.csv'
+
 feature_list = []
 label_list = []
-with open('input2.csv', newline='') as csv_file_obj:
+with open(input_name, newline='') as csv_file_obj:
     reader = csv.reader(csv_file_obj)
     for row in reader:
         row = row[0].split(',')
@@ -23,7 +31,7 @@ with open('input2.csv', newline='') as csv_file_obj:
 X = np.array(feature_list)
 Y = np.array(label_list)
 
-with open('output2.csv', mode='w', newline='') as csv_file_obj:
+with open(output_name, mode='w', newline='') as csv_file_obj:
     writer = csv.writer(csv_file_obj)
     iter_count = 100
     my_alpha = 11
