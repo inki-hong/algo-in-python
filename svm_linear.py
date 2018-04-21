@@ -29,13 +29,38 @@ X_train, X_test, Y_train, Y_test = train_test_split(
     X, Y, test_size=0.4
 )
 
-classifier = LinearSVC()
+# classifier = LinearSVC()
+#
+# classifier.fit(X_train, Y_train)
+#
+# prediction = classifier.predict(X_train)
+# score = accuracy_score(Y_train, prediction)
+# print('Linear SVM training score', score)
+#
+# prediction = classifier.predict(X_test)
+# score = accuracy_score(Y_test, prediction)
+# print('Linear SVM actual score', score)
+
+max_score = -1.0
+c_with_max_score = None
+for c in [0.1, 0.5, 1, 5, 10, 50, 100]:
+    classifier = LinearSVC(C=c)
+
+    classifier.fit(X_train, Y_train)
+
+    prediction = classifier.predict(X_train)
+    score = accuracy_score(Y_train, prediction)
+    print('Linear SVM training score for C =', c, score)
+    if score >= max_score:
+        max_score = score
+        c_with_max_score = c
+
+print('Max score', max_score)
+print('C with max score', c_with_max_score)
+
+classifier = LinearSVC(C=c_with_max_score)
 
 classifier.fit(X_train, Y_train)
-
-prediction = classifier.predict(X_train)
-score = accuracy_score(Y_train, prediction)
-print('Linear SVM training score', score)
 
 prediction = classifier.predict(X_test)
 score = accuracy_score(Y_test, prediction)
