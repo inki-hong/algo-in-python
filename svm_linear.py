@@ -1,15 +1,42 @@
+import csv
+
 import numpy as np
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
 
-X = np.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
-Y = np.array(['A class', 'A class', 'A class', 'B class', 'B class', 'B class'])
+feature_list = []
+label_list = []
+with open('input3.csv', newline='') as csv_file_obj:
+    reader = csv.reader(csv_file_obj)
+    for row in reader:
+        if row == ['A', 'B', 'label']:
+            continue
+
+        feature_1 = float(row[0])
+        feature_2 = float(row[1])
+        feature_list.append([feature_1, feature_2])
+
+        label = int(row[2])
+        label_list.append(label)
+
+        # print(', '.join(row))
+
+X = np.array(feature_list)
+Y = np.array(label_list)
+
+X_train, X_test, Y_train, Y_test = train_test_split(
+    X, Y, test_size=0.4
+)
 
 classifier = LinearSVC()
 
-classifier.fit(X, Y)
+classifier.fit(X_train, Y_train)
 
-prediction = classifier.predict([[-0.8, -1]])
-print('Linear SVM prediction', prediction)
+prediction = classifier.predict(X_train)
+score = accuracy_score(Y_train, prediction)
+print('Linear SVM training score', score)
 
-prediction = classifier.predict([[-0.8, -1], [0.5, 1.5]])
-print('Linear SVM predictions', prediction)
+prediction = classifier.predict(X_test)
+score = accuracy_score(Y_test, prediction)
+print('Linear SVM actual score', score)
